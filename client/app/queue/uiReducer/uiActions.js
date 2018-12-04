@@ -133,6 +133,11 @@ export const setUserRole = (userRole: string) => ({
   payload: { userRole }
 });
 
+export const setUserRoles = (userRoles: Array<string>) => ({
+  type: ACTIONS.SET_USER_ROLES,
+  payload: { userRoles }
+});
+
 export const setUserCssId = (cssId: ?string) => ({
   type: ACTIONS.SET_USER_CSS_ID,
   payload: { cssId }

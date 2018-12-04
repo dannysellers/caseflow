@@ -3,6 +3,7 @@
     userDisplayName: current_user.display_name,
     userId: current_user.id,
     userRole: (current_user.vacols_roles.first || "").capitalize,
+    userRoles: current_user.vacols_roles.map(&:capitalize),
     userCssId: current_user.css_id,
     organizations: current_user.organizations.map {|o| o.slice(:id, :name, :url)},
     userIsVsoEmployee: current_user.vso_employee?,

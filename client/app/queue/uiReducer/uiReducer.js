@@ -19,6 +19,7 @@ export const initialState = {
   modals: {},
   featureToggles: {},
   userRole: '',
+  userRoles: [],
   userCssId: '',
   organizations: [],
   activeOrganizationId: null,
@@ -153,6 +154,10 @@ const workQueueUiReducer = (state: UiState = initialState, action: Object = {}) 
   case ACTIONS.SET_USER_ROLE:
     return update(state, {
       userRole: { $set: action.payload.userRole }
+    });
+  case ACTIONS.SET_USER_ROLES:
+    return update(state, {
+      userRoles: { $set: action.payload.userRoles }
     });
   case ACTIONS.SET_USER_CSS_ID:
     return update(state, {

@@ -9,6 +9,7 @@ import StringUtil from '../util/StringUtil';
 import {
   setFeatureToggles,
   setUserRole,
+  setUserRoles,
   setUserCssId,
   setUserIsVsoEmployee,
   setFeedbackUrl,
@@ -62,6 +63,7 @@ type Props = {|
   feedbackUrl: string,
   userId: number,
   userRole: string,
+  userRoles: Array<string>,
   userCssId: string,
   dropdownUrls: Array<string>,
   buildDate?: string,
@@ -73,6 +75,7 @@ type Props = {|
   // Action creators
   setFeatureToggles: typeof setFeatureToggles,
   setUserRole: typeof setUserRole,
+  setUserRoles: typeof setUserRoles,
   setUserCssId: typeof setUserCssId,
   setUserIsVsoEmployee: typeof setUserIsVsoEmployee,
   setFeedbackUrl: typeof setFeedbackUrl,
@@ -83,6 +86,7 @@ class QueueApp extends React.PureComponent<Props> {
   componentDidMount = () => {
     this.props.setFeatureToggles(this.props.featureToggles);
     this.props.setUserRole(this.props.userRole);
+    this.props.setUserRoles(this.props.userRoles);
     this.props.setUserCssId(this.props.userCssId);
     this.props.setOrganizations(this.props.organizations);
     this.props.setUserIsVsoEmployee(this.props.userIsVsoEmployee);
@@ -415,6 +419,7 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   setFeatureToggles,
   setUserRole,
+  setUserRoles,
   setUserCssId,
   setUserIsVsoEmployee,
   setFeedbackUrl,

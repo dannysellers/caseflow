@@ -25,7 +25,8 @@ const styles = {
 };
 
 type Props = {|
-  organizations: Array<Object>
+  organizations?: Array<Object>,
+  userRoles?: Array<string>
 |};
 
 type ComponentState = {|
@@ -46,8 +47,7 @@ export default class QueueSelectorDropdown extends React.Component<Props, Compon
     }));
   };
 
-  render = () => {
-    const { organizations } = this.props;
+  renderOrganizationsDropdown = (organizations) => {
     const url = window.location.pathname.split('/');
     const location = url[url.length - 1];
     let dropdownButtonList;
@@ -88,6 +88,49 @@ export default class QueueSelectorDropdown extends React.Component<Props, Compon
       </a>
       {dropdownButtonList}
     </div>;
+  };
+
+  renderUserRolesDropdown = (userRoles) => {
+    let dropdownButtonList;
+
+    if (userRoles.length <= 1) {
+      return null;
+    }
+
+    if (this.state.menu) {
+      dropdownButtonList = <ul className="cf-dropdown-menu active" {...styles.dropdownList}>
+        {userRoles.map((role, index) => {
+          const orgHref = '#';
+
+          return <li key={index + 1}>
+            <Link className="usa-button-secondary usa-button"
+              href={orgHref}
+              onClick={this.onMenuClick}>
+              {sprintf(COPY.CASE_LIST_TABLE_ACTING_JUDGE_DROPDOWN_OPTION_LABEL, role)}
+            </Link>
+          </li>;
+        })}
+      </ul>;
+    }
+
+    return <div className="cf-dropdown" {...styles.dropdownButton}>
+      <a onClick={this.onMenuClick}
+        className="cf-dropdown-trigger usa-button usa-button-secondary"
+        {...styles.dropdownTrigger}>
+        {COPY.CASE_LIST_TABLE_ACTING_JUDGE_DROPDOWN_LABEL}
+      </a>
+      {dropdownButtonList}
+    </div>;
+  };
+
+  render = () => {
+    const { organizations, userRoles } = this.props;
+
+    if (organizations) {
+      return this.renderOrganizationsDropdown(organizations);
+    } else if (userRoles) {
+      return this.renderUserRolesDropdown(userRoles);
+    }
   }
 }
 

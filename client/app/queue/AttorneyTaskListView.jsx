@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import { sprintf } from 'sprintf-js';
+import { css } from 'glamor';
 
 import TabWindow from '../components/TabWindow';
 import TaskTable from './components/TaskTable';
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 import Alert from '../components/Alert';
+import QueueSelectorDropdown from './components/QueueSelectorDropdown';
 
 import {
   completeTasksByAssigneeCssIdSelector,
@@ -27,6 +29,11 @@ import { clearCaseSelectSearch } from '../reader/CaseSelect/CaseSelectActions';
 
 import { fullWidth } from './constants';
 import COPY from '../../COPY.json';
+import USER_ROLE_TYPES from '../../constants/USER_ROLE_TYPES.json';
+
+const containerStyles = css({
+  position: 'relative'
+});
 
 import type { TaskWithAppeal } from './types/models';
 
@@ -38,6 +45,7 @@ type Props = Params & {|
   onHoldTasks: Array<TaskWithAppeal>,
   completedTasks: Array<TaskWithAppeal>,
   messages: Object,
+  userRoles: Array<string>,
   resetSaveState: typeof resetSaveState,
   resetSuccessMessages: typeof resetSuccessMessages,
   resetErrorMessages: typeof resetErrorMessages,
@@ -67,13 +75,14 @@ class AttorneyTaskListView extends React.PureComponent<Props> {
   };
 
   render = () => {
-    const { messages } = this.props;
+    const { messages, userRoles } = this.props;
     const noOpenTasks = !_.size([...this.props.workableTasks, ...this.props.onHoldTasks]);
     const noCasesMessage = noOpenTasks ?
       <p>
         {COPY.NO_CASES_IN_QUEUE_MESSAGE}
         <b><Link to="/search">{COPY.NO_CASES_IN_QUEUE_LINK_TEXT}</Link></b>.
       </p> : '';
+    let selectorDropdown;
 
     const tabs = [
       {
@@ -103,7 +112,15 @@ class AttorneyTaskListView extends React.PureComponent<Props> {
       }
     ];
 
-    return <AppSegment filledBackground>
+    const userHasMoreThanOneRole = userRoles.length > 1;
+    const userIsAnActingJudge = userRoles.indexOf(USER_ROLE_TYPES.judge) > -1 &&
+                                userRoles.indexOf(USER_ROLE_TYPES.attorney) > -1;
+
+    if (userHasMoreThanOneRole && userIsAnActingJudge) {
+      selectorDropdown =  <QueueSelectorDropdown userRoles={this.props.userRoles} />;
+    }
+
+    return <AppSegment filledBackground styling={containerStyles}>
       <div>
         <h1 {...fullWidth}>{COPY.ATTORNEY_QUEUE_TABLE_TITLE}</h1>
         {messages.error && <Alert type="error" title={messages.error.title}>
@@ -113,6 +130,7 @@ class AttorneyTaskListView extends React.PureComponent<Props> {
           {messages.success.detail || COPY.ATTORNEY_QUEUE_TABLE_SUCCESS_MESSAGE_DETAIL}
         </Alert>}
         {noCasesMessage}
+        {selectorDropdown}
         <TabWindow
           name="tasks-attorney-list"
           tabs={tabs}
@@ -130,7 +148,8 @@ const mapStateToProps = (state) => {
       }
     },
     ui: {
-      messages
+      messages,
+      userRoles
     }
   } = state;
 
@@ -139,6 +158,7 @@ const mapStateToProps = (state) => {
     onHoldTasks: onHoldTasksByAssigneeCssIdSelector(state),
     completedTasks: completeTasksByAssigneeCssIdSelector(state),
     messages,
+    userRoles,
     taskDecision
   });
 };

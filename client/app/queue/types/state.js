@@ -53,6 +53,7 @@ export type UiState = {
   selectedAssigneeSecondary: ?string,
   loadedUserId: ?number,
   userRole: string,
+  userRoles: Array<string>,
   userCssId: string,
   userIsVsoEmployee: boolean,
   feedbackUrl: string,
