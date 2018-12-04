@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
+import Link from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/Link';
 
 import Alert from '../components/Alert';
 import AppellantDetail from './AppellantDetail';
@@ -34,6 +35,11 @@ const horizontalRuleStyling = css({
   borderTop: `1px solid ${COLORS.GREY_LIGHT}`,
   marginTop: '3rem',
   marginBottom: '3rem'
+});
+
+const issueHeaderStyling = css({
+  display: 'flex',
+  justifyContent: 'space-between'
 });
 
 class CaseDetailsView extends React.PureComponent {
@@ -80,7 +86,11 @@ class CaseDetailsView extends React.PureComponent {
       <StickyNavContentArea>
         <CaseDetailsIssueList
           amaIssueType={featureToggles.ama_decision_issues}
-          title="Issues"
+          title={
+            <span {...issueHeaderStyling}>
+              <span>Issues</span>
+              <span><Link to={`/appeals/${appeal.externalId}/edit`}>Edit</Link></span>
+            </span>}
           isLegacyAppeal={appeal.isLegacyAppeal}
           issues={appeal.issues}
           decisionIssues={appeal.decisionIssues}
