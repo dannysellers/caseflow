@@ -18,6 +18,7 @@ class ClaimReview < DecisionReview
   self.abstract_class = true
 
   class NoEndProductsRequired < StandardError; end
+  class BusinessLineNotFound < StandardError; end
 
   def ui_hash
     super.merge(
@@ -51,8 +52,7 @@ class ClaimReview < DecisionReview
 
   def create_non_comp_task!
     return if tasks.any? { |task| task.is_a?(DecisionReviewTask) } # TODO: more specific check?
-    # TODO: better user?
-    DecisionReviewTask.create!(appeal: self, assigned_at: Time.zone.now, assigned_to: User.system_user)
+    DecisionReviewTask.create!(appeal: self, assigned_at: Time.zone.now, assigned_to: non_comp_business_line)
   end
 
   # Idempotent method to create all the artifacts for this claim.
@@ -121,6 +121,19 @@ class ClaimReview < DecisionReview
   end
 
   private
+
+  def non_comp_business_line
+    return unless non_comp?
+
+    # TODO: matching by url to benefit type seems weird
+    # may want to look into adding another field
+    found_business_line = BusinessLine.find_by(url: benefit_type)
+
+    if not found_business_line
+      fail BusinessLineNotFound, message: "NonComp business line #{benefit_type} was not found"
+    end
+    found_business_line
+  end
 
   def contestable_decision_issues
     return [] unless receipt_date

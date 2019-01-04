@@ -101,10 +101,16 @@ class SeedDB
   end
 
   def create_org_queue_users
-    nca = BusinessLine.create!(name: "National Cemetery Association", url: "nca")
-    (0..5).each do |n|
-      u = User.create!(station_id: 101, css_id: "NCA_QUEUE_USER_#{n}", full_name: "NCA team member #{n}")
-      OrganizationsUser.add_user_to_organization(u, nca)
+    # add all the business lines and users needed for non comp
+    Constants::BENEFIT_TYPES.each do |benefit_url, benefit_name|
+      if ClaimantValidator::BENEFIT_TYPE_REQUIRES_PAYEE_CODE.exclude? benefit_url
+        noncomp_line = BusinessLine.create!(name: benefit_name, url: benefit_url)
+
+        (0..1).each do |n|
+          u = User.create!(station_id: 101, css_id: "#{benefit_url.upcase}_QUEUE_USER_#{n}", full_name: "#{benefit_url.upcase} team member #{n}")
+          OrganizationsUser.add_user_to_organization(u, noncomp_line)
+        end
+      end
     end
 
     (0..5).each do |n|
