@@ -136,7 +136,6 @@ export class TaskTableUnconnected extends React.PureComponent<Props> {
       enableFilter: true,
       tableData: this.props.tasks,
       columnName: 'label',
-      enableClearFiltersRow: true,
       customFilterLabels: CO_LOCATED_ADMIN_ACTIONS,
       label: 'Filter by task',
       valueName: 'label',
@@ -171,7 +170,6 @@ export class TaskTableUnconnected extends React.PureComponent<Props> {
       enableFilter: true,
       tableData: this.props.tasks,
       columnName: 'appeal.caseType',
-      enableClearFiltersRow: true,
       label: 'Filter by type',
       valueName: 'caseType',
       valueFunction: (task: TaskWithAppeal) => this.taskHasDASRecord(task) ?
@@ -205,7 +203,6 @@ export class TaskTableUnconnected extends React.PureComponent<Props> {
       tableData: this.props.tasks,
       columnName: 'appeal.docketName',
       customFilterLabels: DOCKET_NAME_FILTERS,
-      enableClearFiltersRow: true,
       label: 'Filter by docket name',
       valueName: 'docketName',
       valueFunction: (task: TaskWithAppeal) => {
