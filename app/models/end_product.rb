@@ -8,10 +8,10 @@ class EndProduct
     "CLR" => "Cleared",
     "CAN" => "Canceled",
     "RW" => "Ready to work",
-    "RFD" => "Refused"
+    "RFD" => "Ready for decision"
   }.freeze
 
-  INACTIVE_STATUSES = %w[CAN CLR RFD].freeze
+  INACTIVE_STATUSES = %w[CAN CLR].freeze
 
   RAMP_CODES = {
     "682HLRRRAMP" => "Higher-Level Review Rating",
