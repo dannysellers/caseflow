@@ -248,6 +248,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    FeatureToggle.enable!(:use_ama_activation_date)
     @spec_time_zone = Time.zone
   end
 
