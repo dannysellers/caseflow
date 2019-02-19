@@ -131,33 +131,35 @@ RSpec.feature "Colocated checkout flows" do
       expect(colocated_action.instructions[1]).to eq instructions
     end
 
-    scenario "sends task to team" do
-      visit "/queue"
+    ensure_stable do
+      scenario "sends task to team" do
+        visit "/queue"
 
-      appeal = translation_action.appeal
-      vacols_case = appeal.case_record
+        appeal = translation_action.appeal
+        vacols_case = appeal.case_record
 
-      team_name = Constants::CO_LOCATED_ADMIN_ACTIONS[translation_action.action]
-      vet_name = appeal.veteran_full_name
-      click_on "#{vet_name.split(' ').first} #{vet_name.split(' ').last} (#{appeal.sanitized_vbms_id})"
+        team_name = Constants::CO_LOCATED_ADMIN_ACTIONS[translation_action.action]
+        vet_name = appeal.veteran_full_name
+        click_on "#{vet_name.split(' ').first} #{vet_name.split(' ').last} (#{appeal.sanitized_vbms_id})"
 
-      click_dropdown(index: 0)
+        click_dropdown(index: 0)
 
-      expect(page).to have_content(
-        format(COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_HEAD, team_name)
-      )
-      expect(page).to have_content(
-        format(COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_COPY, vet_name, appeal.sanitized_vbms_id)
-      )
+        expect(page).to have_content(
+          format(COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_HEAD, team_name)
+        )
+        expect(page).to have_content(
+          format(COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_COPY, vet_name, appeal.sanitized_vbms_id)
+        )
 
-      click_on COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_BUTTON
+        click_on COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_BUTTON
 
-      expect(page).to have_content(
-        format(COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_CONFIRMATION, vet_name, team_name)
-      )
+        expect(page).to have_content(
+          format(COPY::COLOCATED_ACTION_SEND_TO_ANOTHER_TEAM_CONFIRMATION, vet_name, team_name)
+        )
 
-      expect(translation_action.reload.status).to eq "completed"
-      expect(vacols_case.reload.bfcurloc).to eq LegacyAppeal::LOCATION_CODES[translation_action.action.to_sym]
+        expect(translation_action.reload.status).to eq "completed"
+        expect(vacols_case.reload.bfcurloc).to eq LegacyAppeal::LOCATION_CODES[translation_action.action.to_sym]
+      end
     end
   end
 end
